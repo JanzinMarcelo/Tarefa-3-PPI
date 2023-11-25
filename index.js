@@ -1,15 +1,18 @@
 import express from 'express';
 import path from 'path';
 
+const app = express();
 const porta = 3000;
 const host ='0.0.0.0';
 var listaUsuarios = [];
+app.use(express.urlencoded({ extended: true }));
+
 
 function processaCadastroUsuario(requisicao, resposta){
    const usuario = {
-    nome: requisicao.query.nome,
-    Sobrenome: requisicao.query.Sobrenome,
-    NomeUsuario: requisicao.query.NomeUsuario
+    nome: requisicao.body.nome,
+    Sobrenome: requisicao.body.Sobrenome,
+    NomeUsuario: requisicao.body.NomeUsuario
 
    } 
    listaUsuarios.push(usuario);
@@ -54,7 +57,7 @@ function processaCadastroUsuario(requisicao, resposta){
         `;
         resposta.send(conteudoResposta);
 }
-const app = express();
+
 
 app.use(express.static(path.join(process.cwd(), 'paginas')));
 
@@ -76,7 +79,7 @@ app.get('/',(requisicao,resposta)=>{
 
 })
 
-app.get('/cadastrarUsuario',processaCadastroUsuario);
+app.post('/cadastrarUsuario',processaCadastroUsuario);
     
 
 
