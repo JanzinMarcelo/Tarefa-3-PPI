@@ -9,14 +9,92 @@ app.use(express.urlencoded({ extended: true }));
 
 
 function processaCadastroUsuario(requisicao, resposta){
+    let conteudoResposta='';
+    if(!(requisicao.body.nome && requisicao.body.Sobrenome && requisicao.body.NomeUsuario)){
+        
+        conteudoResposta =`
+        <!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+    <form action="/cadastrarUsuario" method="POST" class="row g-3 needs-validation" novalidate>
+        <fieldset class="border p-2">
+            <legend>Cadastro de Usuário</legend>
+            <div class="col-md-4">
+                <label for="nome" class="form-label">Nome:</label>
+                <input type="text" class="form-control" id="nome" value="${requisicao.body.nome}" name="nome" >
+                <div class="invalid-feedback">
+                    Digite seu nome!
+                </div>
+            </div>
+        `;
+        if(!requisicao.body.nome){
+            conteudoResposta +=`<div>
+                                <p class="text-danger">Por favor informe o nome!</p>
+                                </div>`;
+        } 
+        conteudoResposta +=`
+        <div class="col-md-4">
+                <label for="sobrenome" class="form-label">Sobrenome:</label>
+                <input type="text" class="form-control" id="Sobrenome" value ="${requisicao.body.Sobrenome}" name="Sobrenome" >
+                <div class="invalid-feedback">
+                    Digite seu Sobrenome!
+                </div>
+                </div>`;
+                if(!requisicao.body.idade)
+                {
+                    conteudoResposta +=`<div>
+                                    <p class="text-danger">Por favor informe o seu Sobrenome!</p>
+                                    </div>`;
+                }
+                conteudoResposta +=`
+                <div class="col-md-4">
+                <label for="username" class="form-label">NomeUsuario:</label>
+                <div class="input-group has-validation">
+                    <span class="input-group-text" id="inputGroupPrepend">@</span>
+                    <input type="text" class="form-control" id="username" value ="${requisicao.body.NomeUsuario}" name="NomeUsuario" aria-describedby="inputGroupPrepend" >
+                    <br>
+                    `;
+                    if(!requisicao.body.NomeUsuario)
+                    {
+                       conteudoResposta +=`<div>
+                                       <p class="text-danger">Por favor informe o nome de usuário!</p>
+                                       </div>`;
+                    }
+                    conteudoResposta +=
+                    
+                    `
+                    <div class="invalid-feedback">
+                        Digite seu nome de usuário!
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+            <button class="btn btn-primary mt-4" type="submit">Cadastrar</button>
+        </div>
+    </fieldset>
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+                `;
+                resposta.end(conteudoResposta);
+            
+    }
+    else{
    const usuario = {
     nome: requisicao.body.nome,
-    Sobrenome: requisicao.body.Sobrenome,
+    Sobrenome: requisicao.body.idade,
     NomeUsuario: requisicao.body.NomeUsuario
 
    } 
    listaUsuarios.push(usuario);
-   let conteudoResposta =`
+    conteudoResposta =`
     <!DOCTYPE html>
     <head>
     <meta charset="UTF-8">
@@ -29,7 +107,7 @@ function processaCadastroUsuario(requisicao, resposta){
         <thead>
         <tr>
             <th>Nome</th>
-            <th>Sobrenome</th>
+            <th>idade</th>
             <th>Nome de Usuário</th>
         <tr>
         </thead>
@@ -55,9 +133,9 @@ function processaCadastroUsuario(requisicao, resposta){
         </html>
 
         `;
-        resposta.send(conteudoResposta);
+        resposta.end(conteudoResposta);
+    }
 }
-
 
 app.use(express.static(path.join(process.cwd(), 'paginas')));
 
